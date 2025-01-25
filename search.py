@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import date
+from datetime import date, timedelta
 
 def main(): 
     # conectar com servidor sqlite
@@ -24,10 +24,14 @@ def main():
             out = author_search(name, cur)
         else:
             print('Closing...')
+            con.commit()
+            con.close()
             break
 
         if out == False:
             con.close
+            con.commit()
+            con.close()
             break
 
 
@@ -57,6 +61,7 @@ def title_search(t, cur):
 
         if number == 1:
             print('We will proceed with your book loan!') # continuar caso seja o mesmo livro
+            loan(t, cur)
             return False
         else:
             while True:
@@ -86,7 +91,7 @@ def author_search(n, cur):
                     break
 
             if number == 1:
-                loan(title, cur)
+                loan(books[0][0], cur)
                 return False
             
             else:
@@ -124,10 +129,16 @@ def author_search(n, cur):
                 return number == 1
             
 def loan(title, cur):
-    name = input("What´s your name?")
-    today = date.today().strftime('%d/%m/%Y')
-    return_d = today + 15
-    cur.execute("INSERT into book (borrowed, borrower_name, loan_date, return_date) Values (?, ?, ?, ?) ", (1, name, today, return_d))
-    print(f'You must return or renew the book by {return_d}.')
-                
+    name = input("What is your name?: ")
+
+    today = date.today()
+    today2 =  today.strftime('%d/%m/%Y')
+
+    return_d = today + timedelta(15)
+    return_d2 = return_d.strftime('%d/%m/%Y')
+
+    cur.execute("UPDATE book SET borrowed = ?, borrower_name = ?, loan_date = ?, return_date = ? WHERE title = ? ", (1, name, today2, return_d2, title))
+
+    print(f'You must return or renew the book by {return_d2}.')
+    
 main()
