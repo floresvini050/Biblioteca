@@ -104,7 +104,7 @@ def author_search(n, cur):
             print(f'we have {lenght} books by {n}:')
 
             for c, book in enumerate(books):
-                print(f'{c[0]}',end='')
+                print(f'{book[0]}',end='')
                 if c < lenght - 2:
                     print(', ',end='')
                 elif c == lenght - 2:
