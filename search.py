@@ -9,8 +9,8 @@ def main():
         print('Hello, welcome to our library! How do you want to perform a search? ')
 
         while True:
-            # Selecionar tipo de busca
-            n = int(input('Enter 1 to search by book title, 2 to search by author: '))
+            # Selecionar tipo de busca ou fechar
+            n = int(input('Enter 1 to search by book title, 2 to search by author and 3 to close: '))
             if n >= 1 and n <= 3:
                 break
 
@@ -25,14 +25,14 @@ def main():
             print('Closing...')
             break
 
-        if out == False:
+        if out == False or out in 'close':
             break
 
 
 def title_search(t, cur):
     # Verificar se o nome do livro está no banco de dados
     cur.execute("SELECT title FROM book WHERE title = ?", (t,))
-    found = cur.fetchone()[0]
+    found = cur.fetchone()
 
     # Caso não seja encontrado
     if found is None:
@@ -45,7 +45,7 @@ def title_search(t, cur):
             if number == 1 or number == 2:
                 break
         if number == 1:
-            return True
+            return 'continue'
         
         else:
             return False # Caso contrário, finalizar o programa
@@ -55,13 +55,13 @@ def title_search(t, cur):
         print(f'The book you are looking for is {t} by {author_name}? ') # Se houver um livro com o nome que o usuário digitou no banco de dados, verificar se é o mesmo livro, conferindo o autor
 
         while True:
-            number = input('Enter 1 for yes, 2 for no: ')
+            number = int(input('Enter 1 for yes, 2 for no: '))
             if number == 1 or number == 2:
                 break
 
         if number == 1:
             print('We will proceed with your book loan!') # continuar caso seja o mesmo livro
-
+            return 'close'
         else:
             while True:
                 number = int(input('Sorry, do you want to try a new search? [1 for yes/ 2 for no] '))
