@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import date
 
 def main(): 
     # conectar com servidor sqlite
@@ -78,13 +79,14 @@ def author_search(n, cur):
         lenght = len(books)
         
         if lenght == 1:
-            print(books[0]) 
+            print(books[0][0]) 
             while True:
                 number = int(input('Do you want to borrow this book? [1 to yes/ 2 for no] '))
                 if number == 1 or number == 2:
                     break
 
             if number == 1:
+                loan(title, cur)
                 return False
             
             else:
@@ -110,7 +112,7 @@ def author_search(n, cur):
             if number == 1:
                 title = input('Which book do you want to borrow? ')
                 if title in [book[0] for book in books]:
-                    
+                    loan(title, cur)
                     return False
             
                 else:
@@ -120,5 +122,12 @@ def author_search(n, cur):
             else:
                 number = int(input('Do you want to select another book? [1 for yes] / other for no] '))
                 return number == 1
+            
+def loan(title, cur):
+    name = input("What´s your name?")
+    today = date.today().strftime('%d/%m/%Y')
+    return_d = today + 15
+    cur.execute("INSERT into book (borrowed, borrower_name, loan_date, return_date) Values (?, ?, ?, ?) ", (1, name, today, return_d))
+    print(f'You must return or renew the book by {return_d}.')
                 
 main()

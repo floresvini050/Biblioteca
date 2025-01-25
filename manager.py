@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS author(
 cur.execute("""
 CREATE TABLE IF NOT EXISTS book 
            (id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(100), id_author INTEGER,
-            borrowed INTEGER DEFAULT 0,
+            borrowed BIT DEFAULT 0,
             borrower_name VARCHAR (100) DEFAULT NULL,
             loan_date DATE DEFAULT NULL,
             return_date DATE DEFAULT NULL,
@@ -38,8 +38,13 @@ with open('library.csv', encoding='utf-8') as csvfile:
             current_quantity = author[1]
             new_quantity = current_quantity + 1
             cur.execute('UPDATE author SET quantity = ? WHERE id = ?', (new_quantity, author_id))
-            
-        cur.execute('INSERT INTO book (title, id_author) VALUES (?, ?)', (row['title'], author_id))
+        
+        cur.execute("SELECT id FROM book WHERE title = ?", (row['title'],))
+        book_id = cur.fetchone()
+
+        if book_id is None:
+            cur.execute('INSERT INTO book (title, id_author) VALUES (?, ?)', (row['title'], author_id))
+    
 
      
 
