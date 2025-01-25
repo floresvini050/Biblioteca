@@ -17,9 +17,9 @@ cur.execute("""
 CREATE TABLE IF NOT EXISTS book 
            (id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(100), id_author INTEGER,
             borrowed INTEGER DEFAULT 0,
-            borrower_name VARCHAR (100),
-            loan_date DATE,
-            return_date DATE,
+            borrower_name VARCHAR (100) DEFAULT NULL,
+            loan_date DATE DEFAULT NULL,
+            return_date DATE DEFAULT NULL,
             FOREIGN KEY (id_author) REFERENCES author(id));
 """)
 

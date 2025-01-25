@@ -26,6 +26,7 @@ def main():
             break
 
         if out == False:
+            con.close
             break
 
 
@@ -40,7 +41,7 @@ def title_search(t, cur):
         print('If you want, we can carry out a new search.')
         
         while True:
-            # Perguntar ao usuário se quer prcourar outro livro
+            # Perguntar ao usuário se quer procurar outro livro
             number = int(input('Enter 1 to perform a new search, other to close: '))
             return number == 1
     else:
@@ -58,14 +59,9 @@ def title_search(t, cur):
             return False
         else:
             while True:
-                number = int(input('Sorry, do you want to try a new search? [1 for yes/ 2 for no] '))
-                if number == 1 or number == 2:
-                    break # Caso contrário, realizar uma nova busca ou fechar o programa
-            if number == 1:
-                return True
+                number = int(input('Sorry, do you want to try a new search? [1 for yes/ other for no] '))
+                return number == 1 # Caso contrário, realizar uma nova busca ou fechar o programa
             
-            else:
-                return False
             
 def author_search(n, cur):
     cur.execute("SELECT id FROM author WHERE name = ?", (n,))
@@ -114,10 +110,15 @@ def author_search(n, cur):
             if number == 1:
                 title = input('Which book do you want to borrow? ')
                 if title in [book[0] for book in books]:
+                    
                     return False
             
                 else:
                     print('Not found!')
                     number = int(input('Do you want to select another book? [1 for yes/ other for no] '))
                     return number == 1
+            else:
+                number = int(input('Do you want to select another book? [1 for yes] / other for no] '))
+                return number == 1
+                
 main()
