@@ -20,7 +20,7 @@ def main():
 
         elif n == 2:
             name = input('Enter the name of the author: ')
-        
+            out = author_search(name, cur)
         else:
             print('Closing...')
             break
@@ -72,5 +72,19 @@ def title_search(t, cur):
             
             else:
                 return False
+            
+def author_search(n, cur):
+    cur.execute("SELECT id FROM author WHERE name = ?", (n,))
+    found = cur.fetchone()
+    if found is None:
+        while True:
+            number = int(input("We don't have any books by this author. Do you want to do a new search?[1 for yes/ 2 for no] "))
+            if number == 1 or number == 2:
+                break
+        if number == 1:
+            return 'continue'
         
+        else:
+            return False
+    
 main()
