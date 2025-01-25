@@ -11,15 +11,19 @@ def main():
         while True:
             # Selecionar tipo de busca
             n = int(input('Enter 1 to search by book title, 2 to search by author: '))
-            if n == 1 or n == 2:
+            if n >= 1 and n <= 3:
                 break
 
         if n == 1:
             title = input('Enter the title of the book: ')
             out = title_search(title, cur)
 
-        else:
+        elif n == 2:
             name = input('Enter the name of the author: ')
+        
+        else:
+            print('Closing...')
+            break
 
         if out == False:
             break
@@ -31,7 +35,7 @@ def title_search(t, cur):
     found = cur.fetchone()[0]
 
     # Caso não seja encontrado
-    if found == None:
+    if found is None:
         print("Sorry, we don't have the book you are looking for.")
         print('If you want, we can carry out a new search.')
         
@@ -40,7 +44,7 @@ def title_search(t, cur):
             number = int(input('Enter 1 to perform a new search, 2 to close: '))
             if number == 1 or number == 2:
                 break
-        if n == 1:
+        if number == 1:
             return True
         
         else:
@@ -60,10 +64,10 @@ def title_search(t, cur):
 
         else:
             while True:
-                n = int(input('Sorry, do you want to try a new search? [1 for yes/ 2 for no] '))
-                if n == 1 or n == 2:
+                number = int(input('Sorry, do you want to try a new search? [1 for yes/ 2 for no] '))
+                if number == 1 or number == 2:
                     break # Caso contrário, realizar uma nova busca ou fechar o programa
-            if n == 1:
+            if number == 1:
                 return True
             
             else:
