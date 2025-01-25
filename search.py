@@ -41,14 +41,8 @@ def title_search(t, cur):
         
         while True:
             # Perguntar ao usuário se quer prcourar outro livro
-            number = int(input('Enter 1 to perform a new search, 2 to close: '))
-            if number == 1 or number == 2:
-                break
-        if number == 1:
-            return True
-        
-        else:
-            return False # Caso contrário, finalizar o programa
+            number = int(input('Enter 1 to perform a new search, other to close: '))
+            return number == 1
     else:
         cur.execute("SELECT author.name FROM author INNER JOIN book ON author.id = book.id_author WHERE book.title = ?", (t,) )
         author_name = cur.fetchone()[0] 
