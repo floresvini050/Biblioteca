@@ -15,11 +15,12 @@ CREATE TABLE IF NOT EXISTS author(
 
 cur.execute("""
 CREATE TABLE IF NOT EXISTS book 
-           (id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(100), id_author INTEGER, FOREIGN KEY (id_author) REFERENCES author(id),
+           (id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(100), id_author INTEGER,
             borrowed INTEGER DEFAULT 0,
             borrower_name VARCHAR (100),
             loan_date DATE,
-            return_date DATE);
+            return_date DATE,
+            FOREIGN KEY (id_author) REFERENCES author(id));
 """)
 
 # Ler o arquivo CSV

@@ -25,7 +25,7 @@ def main():
             print('Closing...')
             break
 
-        if out == False or out in 'close':
+        if out == False:
             break
 
 
@@ -45,7 +45,7 @@ def title_search(t, cur):
             if number == 1 or number == 2:
                 break
         if number == 1:
-            return 'continue'
+            return True
         
         else:
             return False # Caso contrário, finalizar o programa
@@ -61,7 +61,7 @@ def title_search(t, cur):
 
         if number == 1:
             print('We will proceed with your book loan!') # continuar caso seja o mesmo livro
-            return 'close'
+            return False
         else:
             while True:
                 number = int(input('Sorry, do you want to try a new search? [1 for yes/ 2 for no] '))
@@ -82,9 +82,69 @@ def author_search(n, cur):
             if number == 1 or number == 2:
                 break
         if number == 1:
-            return 'continue'
+            return False
         
         else:
             return False
-    
+    else:
+        cur.execute("Select book.title FROM book INNER JOIN author ON author.id = book.id_author WHERE book.id_author = ?", (found[0],))
+        books = cur.fetchall()
+        lenght = len(books)
+        if lenght == 1:
+            print(books[0]) 
+            while True:
+                number = int(input('Do you want to borrow this book? [1 to yes/ 2 for no] '))
+                if number == 1 or number == 2:
+                    break
+
+            if number == 1:
+                return False
+            
+            else:
+                while True:
+                    number = int(input('Do you want to select another book? '))
+                    if number == 1 or number == 2:
+                        break
+                if number == 1:
+                    return True
+
+                else:
+                    return False 
+        else:
+            print(f'we have {lenght} books by {n}:')
+
+            for c, book in enumerate(books):
+                for d in book:
+                    print(f'{d}',end='')
+                    if c < lenght - 2:
+                        print(', ',end='')
+                    elif c == lenght - 2:
+                        print(' e ',end='')
+                    else:
+                        print('.')
+
+            while True:
+                number = int(input('Do you want to borrow any of these books? [1 for yes/ 2 for no] '))
+                if number == 1 or number == 2:
+                    break
+
+            if number == 1:
+                title = input('Which book do you want to borrow? ')
+                if title in [book[0] for book in books]:
+                    return False
+               
+
+                else:
+                    print('Not found!')
+
+                    while True:
+                        number = int(input('Do you want to select another book? [1 for yes/ 2 for no] '))
+                        if number == 1 or number == 2:
+                            break
+
+                    if number == 1:
+                        return True
+                    else:
+                        return False 
+
 main()
