@@ -44,19 +44,18 @@ def title_search(t, cur):
         print("Sorry, we don't have the book you are looking for.")
         print('If you want, we can carry out a new search.')
         
-        return get_confirmation
+        return get_confirmation('Would you like to perform another search? [1 for yes / other for no]')
     else:
         cur.execute("SELECT author.name FROM author INNER JOIN book ON author.id = book.id_author WHERE book.title LIKE ?", ('%' + t + '%',) )
         author_name = cur.fetchone()[0] 
         print(f'The book you are looking for is {t} by {author_name}? ') # Se houver um livro com o nome que o usuário digitou no banco de dados, verificar se é o mesmo livro, conferindo o autor
 
-        if get_confirmation:
+        if get_confirmation('Is this the correct book? [1 for yes / 2 for no]'):
             print('We will proceed with your book loan!') # continuar caso seja o mesmo livro
             loan(t, cur)
             return False
         
-        else:
-            return False # Caso contrário, realizar uma nova busca ou fechar o programa
+        return False # Caso contrário, realizar uma nova busca ou fechar o programa
             
             
 def author_search(n, cur):
@@ -66,7 +65,7 @@ def author_search(n, cur):
     if found is None: # Se não estiver
         
         number = int(input('We dont have any books by this author.'))
-        return get_confirmation()
+        return get_confirmation('Would you like to perform another search? [1 for yes / other for no]')
     
     else: #Se estiver
         cur.execute("Select book.title FROM book INNER JOIN author ON author.id = book.id_author WHERE book.id_author = ?", (found[0],))
@@ -75,18 +74,15 @@ def author_search(n, cur):
         
         if lenght == 1: # Caso haja apenas um livro desse autor na biblioteca
             print(books[0][0]) 
-            while True: # Confirmar se o usuário quer esse livro
-                number = int(input('Do you want to borrow this book? [1 to yes/ 2 for no] '))
-                if number == 1 or number == 2:
-                    break
-
-            if number == 1: # Se quiser, realizar o empréstimo
+ 
+            if get_confirmation('Do you want to borrow this book? [1 to yes/ 2 for no] '): # Se quiser, realizar o empréstimo
                 loan(books[0][0], cur)
                 return False
             
             else: # Caso contrário, voltar ao iníxio
-                number = int(input('Do you want to select another book? [1 for yes / other for no]'))
-                return number == 1
+                return get_confirmation('Do you want to select another book? [1 for yes / other for no]')
+                    
+
         else: # Caso a biblioteca tiver mais de um livro desse autor
             print(f'we have {lenght} books by {n}:')
 
@@ -112,10 +108,9 @@ def author_search(n, cur):
             
                 else:
                     print('Not found!') 
-                    number = int(input('Do you want to select another book? [1 for yes/ other for no] ')) #Se a biblioteca nao tiver esse livro
-                    return number == 1
+                    return get_confirmation('Do you want to select another book? [1 for yes/ other for no] ') #Se a biblioteca nao tiver esse livro
             else: # Se o leitor não quiser nenhum daqueles livros
-                return get_confirmation()
+                return get_confirmation('Would you like to perform another search? [1 for yes / other for no]')
             
 def loan(title, cur):
     while True:
@@ -137,13 +132,16 @@ def loan(title, cur):
 
     print(f'You must return or renew the book by {return_d2}.')
     
-def get_confirmation():
+def get_confirmation(text):
+    print(text)
     while True:
-        number = int(input('Do you want to select another book? [1 for yes] / other for no] '))
+        number = int(input())
         if number == 1:
             return True
         elif number == 2:
             return False
+        else:
+            print('Only option 1 and 2 are valid.')
 
     
     
