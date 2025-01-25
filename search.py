@@ -29,7 +29,9 @@ def main():
 
             if out == False:
                 break
+        
     finally:
+        print('Thank you for visiting our library! Come back often.')
         if 'con' in locals():
             con.commit()
             con.close()
@@ -55,7 +57,7 @@ def title_search(t, cur):
             loan(t, cur)
             return False
         
-        return False # Caso contrário, realizar uma nova busca ou fechar o programa
+        get_confirmation('Want to select a new book? [1 to yes/ 2 for no] ') # Caso contrário, realizar uma nova busca ou fechar o programa
             
             
 def author_search(n, cur):
