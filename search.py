@@ -3,37 +3,34 @@ from datetime import date, timedelta
 
 def main(): 
     # conectar com servidor sqlite
-    con = sqlite3.connect("books.db")
-    cur = con.cursor()
-    
-    while True:
-        print('Hello, welcome to our library! How do you want to perform a search? ')
-
+    try:
+        con = sqlite3.connect("books.db")
+        cur = con.cursor()
+        
         while True:
-            # Selecionar tipo de busca ou fechar
-            n = int(input('Enter 1 to search by book title, 2 to search by author and 3 to close: '))
-            if n >= 1 and n <= 3:
+            print('Hello, welcome to our library! How do you want to perform a search? ')
+
+            while True:
+                # Selecionar tipo de busca ou fechar
+                n = int(input('Enter 1 to search by book title, 2 to search by author and 3 to close: '))
+                if n >= 1 and n <= 3:
+                    break
+
+            if n == 1:
+                title = input('Enter the title of the book: ')
+                out = title_search(title, cur)
+
+            elif n == 2:
+                name = input('Enter the name of the author: ')
+                out = author_search(name, cur)
+            else:
+                print('Closing...')
                 break
 
-        if n == 1:
-            title = input('Enter the title of the book: ')
-            out = title_search(title, cur)
-
-        elif n == 2:
-            name = input('Enter the name of the author: ')
-            out = author_search(name, cur)
-        else:
-            print('Closing...')
-            con.commit()
-            con.close()
-            break
-
-        if out == False:
-            con.close
-            con.commit()
-            con.close()
-            break
-
+            if out == False:
+                break
+    finally:
+        con.close()
 
 def title_search(t, cur):
     # Verificar se o nome do livro está no banco de dados
@@ -138,6 +135,7 @@ def loan(title, cur):
     return_d2 = return_d.strftime('%d/%m/%Y')
 
     cur.execute("UPDATE book SET borrowed = ?, borrower_name = ?, loan_date = ?, return_date = ? WHERE title = ? ", (1, name, today2, return_d2, title))
+    con.commit()
 
     print(f'You must return or renew the book by {return_d2}.')
     
