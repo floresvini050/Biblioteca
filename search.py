@@ -76,20 +76,17 @@ def title_search(t, cur):
 def author_search(n, cur):
     cur.execute("SELECT id FROM author WHERE name = ?", (n,))
     found = cur.fetchone()
+
     if found is None:
-        while True:
-            number = int(input("We don't have any books by this author. Do you want to do a new search?[1 for yes/ 2 for no] "))
-            if number == 1 or number == 2:
-                break
-        if number == 1:
-            return False
         
-        else:
-            return False
+        number = int(input("We don't have any books by this author. Do you want to do a new search?[1 for yes / other for no]"))   
+        return number == 1
+    
     else:
         cur.execute("Select book.title FROM book INNER JOIN author ON author.id = book.id_author WHERE book.id_author = ?", (found[0],))
         books = cur.fetchall()
         lenght = len(books)
+        
         if lenght == 1:
             print(books[0]) 
             while True:
@@ -101,27 +98,19 @@ def author_search(n, cur):
                 return False
             
             else:
-                while True:
-                    number = int(input('Do you want to select another book? '))
-                    if number == 1 or number == 2:
-                        break
-                if number == 1:
-                    return True
-
-                else:
-                    return False 
+                number = int(input('Do you want to select another book? [1 for yes / other for no]'))
+                return number == 1
         else:
             print(f'we have {lenght} books by {n}:')
 
             for c, book in enumerate(books):
-                for d in book:
-                    print(f'{d}',end='')
-                    if c < lenght - 2:
-                        print(', ',end='')
-                    elif c == lenght - 2:
-                        print(' e ',end='')
-                    else:
-                        print('.')
+                print(f'{c[0]}',end='')
+                if c < lenght - 2:
+                    print(', ',end='')
+                elif c == lenght - 2:
+                    print(' e ',end='')
+                else:
+                    print('.')
 
             while True:
                 number = int(input('Do you want to borrow any of these books? [1 for yes/ 2 for no] '))
@@ -132,19 +121,9 @@ def author_search(n, cur):
                 title = input('Which book do you want to borrow? ')
                 if title in [book[0] for book in books]:
                     return False
-               
-
+            
                 else:
                     print('Not found!')
-
-                    while True:
-                        number = int(input('Do you want to select another book? [1 for yes/ 2 for no] '))
-                        if number == 1 or number == 2:
-                            break
-
-                    if number == 1:
-                        return True
-                    else:
-                        return False 
-
+                    number = int(input('Do you want to select another book? [1 for yes/ other for no] '))
+                    return number == 1
 main()
