@@ -30,7 +30,9 @@ def main():
             if out == False:
                 break
     finally:
-        con.close()
+        if 'con' in locals():
+            con.commit()
+            con.close()
 
 def title_search(t, cur):
     # Verificar se o nome do livro está no banco de dados
@@ -68,36 +70,36 @@ def title_search(t, cur):
             
 def author_search(n, cur):
     cur.execute("SELECT id FROM author WHERE name = ?", (n,))
-    found = cur.fetchone()
+    found = cur.fetchone() # verificar se o autor está na lista
 
-    if found is None:
+    if found is None: # Se não estiver
         
         number = int(input("We don't have any books by this author. Do you want to do a new search?[1 for yes / other for no]"))   
         return number == 1
     
-    else:
+    else: #Se estiver
         cur.execute("Select book.title FROM book INNER JOIN author ON author.id = book.id_author WHERE book.id_author = ?", (found[0],))
         books = cur.fetchall()
         lenght = len(books)
         
-        if lenght == 1:
+        if lenght == 1: # Caso haja apenas um livro desse autor na biblioteca
             print(books[0][0]) 
-            while True:
+            while True: # Confirmar se o usuário quer esse livro
                 number = int(input('Do you want to borrow this book? [1 to yes/ 2 for no] '))
                 if number == 1 or number == 2:
                     break
 
-            if number == 1:
+            if number == 1: # Se quiser, realizar o empréstimo
                 loan(books[0][0], cur)
                 return False
             
-            else:
+            else: # Caso contrário, voltar ao iníxio
                 number = int(input('Do you want to select another book? [1 for yes / other for no]'))
                 return number == 1
-        else:
+        else: # Caso a biblioteca tiver mais de um livro desse autor
             print(f'we have {lenght} books by {n}:')
 
-            for c, book in enumerate(books):
+            for c, book in enumerate(books): # Imprimir os livros do autor
                 print(f'{book[0]}',end='')
                 if c < lenght - 2:
                     print(', ',end='')
@@ -106,27 +108,27 @@ def author_search(n, cur):
                 else:
                     print('.')
 
-            while True:
+            while True: # Confirmar se o leitor quer algum desses livros
                 number = int(input('Do you want to borrow any of these books? [1 for yes/ 2 for no] '))
                 if number == 1 or number == 2:
                     break
 
-            if number == 1:
-                title = input('Which book do you want to borrow? ')
+            if number == 1: # Se quiser
+                title = input('Which book do you want to borrow? ') # Escolher o livro
                 if title in [book[0] for book in books]:
-                    loan(title, cur)
+                    loan(title, cur) # Realizar o empréstimo
                     return False
             
                 else:
-                    print('Not found!')
-                    number = int(input('Do you want to select another book? [1 for yes/ other for no] '))
+                    print('Not found!') 
+                    number = int(input('Do you want to select another book? [1 for yes/ other for no] ')) #Se a biblioteca nao tiver esse livro
                     return number == 1
-            else:
+            else: # Se o leitor não quiser nenhum daqueles livros
                 number = int(input('Do you want to select another book? [1 for yes] / other for no] '))
                 return number == 1
             
 def loan(title, cur):
-    name = input("What is your name?: ")
+    name = input("What is your name?: ") 
 
     today = date.today()
     today2 =  today.strftime('%d/%m/%Y')
@@ -134,8 +136,7 @@ def loan(title, cur):
     return_d = today + timedelta(15)
     return_d2 = return_d.strftime('%d/%m/%Y')
 
-    cur.execute("UPDATE book SET borrowed = ?, borrower_name = ?, loan_date = ?, return_date = ? WHERE title = ? ", (1, name, today2, return_d2, title))
-    con.commit()
+    cur.execute("UPDATE book SET borrowed = ?, borrower_name = ?, loan_date = ?, return_date = ? WHERE title = ? ", (1, name, today2, return_d2, title)) #Atualizar os valores no banco de dados
 
     print(f'You must return or renew the book by {return_d2}.')
     
