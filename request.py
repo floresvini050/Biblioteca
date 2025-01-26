@@ -37,3 +37,4 @@ def main():
             con.commit()
             con.close()
 
+main()
