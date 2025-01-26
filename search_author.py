@@ -1,5 +1,6 @@
 from confirmation import get_confirmation
 from loan import loan
+from borrowed_verification import is_borrowed
 
 def author_search(n, cur):
     cur.execute("SELECT id FROM author WHERE name LIKE ?", ('%' + n + '%',))
@@ -19,6 +20,9 @@ def author_search(n, cur):
             print(books[0][0]) 
  
             if get_confirmation('Do you want to borrow this book? [1 to yes/ 2 for no] '): # Se quiser, realizar o empréstimo
+                if is_borrowed(title, cur):
+                    return False
+                
                 loan(books[0][0], cur)
                 return False
             
@@ -27,7 +31,7 @@ def author_search(n, cur):
                     
 
         else: # Caso a biblioteca tiver mais de um livro desse autor
-            print(f'we have {lenght} books by {n}:')
+            print(f'We have {lenght} books by {n}:')
 
             for c, book in enumerate(books): # Imprimir os livros do autor
                 print(f'{book[0]}',end='')
@@ -46,8 +50,13 @@ def author_search(n, cur):
             if number == 1: # Se quiser
                 title = input('Which book do you want to borrow? ').strip().title() # Escolher o livro
                 if title in [book[0] for book in books]:
-                    loan(title, cur) # Realizar o empréstimo
-                    return False
+                    if not is_borrowed(title, cur):
+                        loan(title, cur) # Realizar o empréstimo
+                        return False
+                    else:
+                        if get_confirmation('This book is currently on loan. Do you want to select another one? [1 for yes / 2 for no] '):
+                            return True
+                        return False
             
                 else:
                     print('Not found!') 
