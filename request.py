@@ -36,3 +36,4 @@ def main():
         if 'con' in locals():
             con.commit()
             con.close()
+
