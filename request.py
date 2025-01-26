@@ -25,7 +25,7 @@ def main():
                 name = input('Enter the name of the author: ').strip().title()
                 out = author_search(name, cur)
             elif n == 3:
-                return_book()
+                return_book(cur)
             else:
                 print('Closing...')
                 break
