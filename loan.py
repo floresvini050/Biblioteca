@@ -18,4 +18,6 @@ def loan(title, cur):
 
     cur.execute("UPDATE book SET borrowed = ?, borrower_name = ?, loan_date = ?, return_date = ? WHERE title like ? ", (1, name, today2, return_d2, '%' + title + '%')) #Atualizar os valores no banco de dados
 
+    print(f'Enjoy reading {title}.')
+
     print(f'You must return or renew the book by {return_d2}.')
