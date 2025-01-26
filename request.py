@@ -1,6 +1,7 @@
 import sqlite3
 from search_author import author_search
 from search_title import title_search
+from confirmation import get_confirmation
 
 def main(): 
     # conectar com servidor sqlite
@@ -11,11 +12,9 @@ def main():
         while True:
             print('Hello, welcome to our library! How do you want to perform a search? ')
 
-            while True:
                 # Selecionar tipo de busca ou fechar
-                n = int(input('Enter 1 to search by book title, 2 to search by author and 3 to close: '))
-                if n >= 1 and n <= 3:
-                    break
+            options_number = 3
+            n = get_confirmation('Enter 1 to search by book title, 2 to search by author and 3 to close: ', options_number)
 
             if n == 1:
                 title = input('Enter the title of the book: ').strip().title()
@@ -30,6 +29,9 @@ def main():
 
             if out == False:
                 break
+    
+    except:
+        print('error connecting to database.')
         
     finally:
         print('Thank you for visiting our library! Come back often.')

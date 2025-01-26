@@ -9,7 +9,9 @@ def author_search(n, cur):
     if found is None: # Se não estiver
         
         number = int(input('We dont have any books by this author.'))
-        return get_confirmation('Would you like to perform another search? [1 for yes / other for no]')
+        if get_confirmation('Would you like to perform another search? [1 for yes / other for no]') == 1:
+            return True
+        return False
     
     else: #Se estiver
         cur.execute("Select book.title FROM book INNER JOIN author ON author.id = book.id_author WHERE book.id_author = ?", (found[0],))
@@ -19,15 +21,17 @@ def author_search(n, cur):
         if lenght == 1: # Caso haja apenas um livro desse autor na biblioteca
             print(books[0][0]) 
  
-            if get_confirmation('Do you want to borrow this book? [1 to yes/ 2 for no] '): # Se quiser, realizar o empréstimo
-                if is_borrowed(title, cur):
+            if get_confirmation('Do you want to borrow this book? [1 to yes/ 2 for no] ') == 1: # Se quiser, realizar o empréstimo
+                if not is_borrowed(title, cur):
                     return False
                 
                 loan(books[0][0], cur)
                 return False
             
             else: # Caso contrário, voltar ao iníxio
-                return get_confirmation('Do you want to select another book? [1 for yes / other for no]')
+                if get_confirmation('Do you want to select another book? [1 for yes / other for no]') == 1:
+                    return True
+                return False
                     
 
         else: # Caso a biblioteca tiver mais de um livro desse autor
@@ -54,12 +58,16 @@ def author_search(n, cur):
                         loan(title, cur) # Realizar o empréstimo
                         return False
                     else:
-                        if get_confirmation('This book is currently on loan. Do you want to select another one? [1 for yes / 2 for no] '):
+                        if get_confirmation('This book is currently on loan. Do you want to select another one? [1 for yes / 2 for no] ') == 1:
                             return True
                         return False
             
                 else:
                     print('Not found!') 
-                    return get_confirmation('Do you want to select another book? [1 for yes/ other for no] ') #Se a biblioteca nao tiver esse livro
+                    if get_confirmation('Do you want to select another book? [1 for yes/ other for no] ') == 1:
+                        return True #Se a biblioteca nao tiver esse livro
+                    return False
             else: # Se o leitor não quiser nenhum daqueles livros
-                return get_confirmation('Would you like to perform another search? [1 for yes / other for no]')
+                if get_confirmation('Would you like to perform another search? [1 for yes / other for no]') == 1:
+                    return True
+                return False
