@@ -29,24 +29,22 @@ def author_search(n, cur):
             else:
                 print('.')
 
-        if boolean('Do you want to borrow any of these books? [1 for yes/ 2 for no] '): # Se quiser            
-            title = input('Which book do you want to borrow? ').strip().title() # Escolher o livro
+           
+        title = input('Which book do you want to borrow? ').strip().title() # Escolher o livro
+        if not title:
+            print('Please, enter the name of the book.')
 
-            if not title:
-                print('Please, enter the name of the book.')
-
-            elif title in [book[0] for book in books]:
-                if not is_borrowed(title, cur):
-                    loan(title, cur) # Realizar o empréstimo
-                    return False
-                
-                else:
-                    return boolean('This book is currently on loan. Do you want to select another one? [1 for yes / 2 for no] ')
+        elif title in [book[0] for book in books]:
+            if not is_borrowed(title, cur):
+                loan(title, cur) # Realizar o empréstimo
+                return False
                 
             else:
-                print('Not found!') 
-                return boolean('Do you want to select another book? [1 for yes/ other for no] ')
+                return boolean('This book is currently on loan. Do you want to select another one? [1 for yes / 2 for no] ')
+                
+        else:
+            print('Not found!') 
+            return boolean('Do you want to select another book? [1 for yes/ other for no] ')
                             
-        else: # Se o leitor não quiser nenhum daqueles livros
-            return boolean('Would you like to perform another search? [1 for yes / other for no]')
+
                     
