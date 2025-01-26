@@ -38,18 +38,27 @@ def main():
 
 def title_search(t, cur):
     # Verificar se o nome do livro está no banco de dados
-    cur.execute("SELECT title FROM book WHERE title LIKE ?", ('%' + t + '%',))
-    found = cur.fetchone()
+    cur.execute("""SELECT book.title, book.borrowed, book.return_date, author.name 
+                FROM book 
+                INNER JOIN author 
+                ON author.id = book.id_author
+                WHERE title LIKE ?""", ('%' + t + '%',))
+    found = cur.fetchall()
+
 
     # Caso não seja encontrado
-    if found is None:
+    if not found:
         print("Sorry, we don't have the book you are looking for.")
         print('If you want, we can carry out a new search.')
         
         return get_confirmation('Would you like to perform another search? [1 for yes / other for no]')
+    
     else:
-        cur.execute("SELECT author.name FROM author INNER JOIN book ON author.id = book.id_author WHERE book.title LIKE ?", ('%' + t + '%',) )
-        author_name = cur.fetchone()[0] 
+        if found[0][1] == 1:
+            print(f'We have this book, but it is already on loan. Must return by {found[0][2]}.')
+            return get_confirmation('Want to select another book? [1 to yes/ 2 for no] ')
+        
+        author_name = found[0][3]
         print(f'The book you are looking for is {t} by {author_name}? ') # Se houver um livro com o nome que o usuário digitou no banco de dados, verificar se é o mesmo livro, conferindo o autor
 
         if get_confirmation('Is this the correct book? [1 for yes / 2 for no]'):
@@ -57,7 +66,7 @@ def title_search(t, cur):
             loan(t, cur)
             return False
         
-        get_confirmation('Want to select a new book? [1 to yes/ 2 for no] ') # Caso contrário, realizar uma nova busca ou fechar o programa
+        return get_confirmation('Want to select a new book? [1 to yes/ 2 for no] ') # Caso contrário, realizar uma nova busca ou fechar o programa
             
             
 def author_search(n, cur):
@@ -116,7 +125,7 @@ def author_search(n, cur):
             
 def loan(title, cur):
     while True:
-        decision = int(input(f'You selected the book {title} Do you want to continue?. [1 to yes/ other for no]'))
+        decision = int(input(f"You selected the book '{title}' Do you want to continue?. [1 to yes/ other for no] "))
         if decision == 1 or decision == 2:
             break
     if decision == 2:
@@ -135,7 +144,7 @@ def loan(title, cur):
     print(f'You must return or renew the book by {return_d2}.')
     
 def get_confirmation(text):
-    print(text)
+    print(f'{text}',end=' ')
     while True:
         number = int(input())
         if number == 1:
