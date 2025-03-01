@@ -7,3 +7,7 @@ def database_connection():
     conn = sqlite3.connect('books.db')
     conn.row_factory = sqlite3.Row #habilitar pesquisa por nomes de colunas
     return conn
+
+@app.route('/')
+def index():
+    return render_template('index.html')
