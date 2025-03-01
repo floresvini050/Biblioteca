@@ -1,5 +1,5 @@
 import sqlite3
-from search_author import author_search
+from biblioteca_web.search_author import author_search
 from search_title import title_search
 from confirmation import get_confirmation
 from returnbook import return_book

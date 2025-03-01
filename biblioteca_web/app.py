@@ -14,9 +14,20 @@ def index():
 
 @app.route('/search', methods= ['POST'])
 def search():
-    seach_type = request.form['search_type']
-    query = request.form['query'].strip().title()
+    search_type = request.form.get('search_type')
+    query = request.form.get('query').strip().title()
 
     conn = database_connection()
-    cur = conn.cursor
-    
+    cur = conn.cursor() 
+
+    if search_type == 'title_search':
+        cur.execute("SELECT id FROM author WHERE name LIKE ?", ('%' + query + '%',))
+        results = cur.fetchone()
+        cur.execute("SELECT title FROM book where id = ?" (results, ))
+
+    else:
+        cur.execute("SELECT title FROM book WHERE title LIKE ?", ('%' + query + '%', ))
+        results = cur.fetchall()
+
+    conn.close()
+    return render_template("search.html", results=results, query=query)  
