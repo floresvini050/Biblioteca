@@ -2,4 +2,13 @@
 
 {% block content %}
     Resultados para {{query}}
+    {% if results %}
+        <ol>
+            {% for item in results %}
+                <li>{{item['title']}}</li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <p>Nenhum resultado encontrado.</p>
+    {% endif %}
 {% endblock %}
