@@ -5,7 +5,12 @@
     {% if results %}
         <ol>
             {% for item in results %}
-                <li>{{item['title']}}</li>
+                <li class="mb-2">
+                    {{item['title']}}
+                    <button class="btn btn-sm {% if item['borrowed'] %}btn-danger{% else %}btn-success{% endif %}">
+                        {% if item['borrowed'] %}Reservado{% else %}Disponível{% endif %}
+                    </button>
+                </li>
             {% endfor %}
         </ol>
     {% else %}

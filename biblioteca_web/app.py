@@ -23,7 +23,7 @@ def search():
     results = []
 
     if search_type == 'title_search':
-        cur.execute("SELECT title FROM book WHERE title LIKE ?", ('%' + query + '%',))
+        cur.execute("SELECT title, borrowed FROM book WHERE title LIKE ?", ('%' + query + '%',))
         results = cur.fetchall()
     else:
         # Busca todos os autores que correspondem à query
@@ -31,12 +31,11 @@ def search():
         authors = cur.fetchall()
         
         if authors:
-            # Extrai todos os IDs dos autores encontrados
             author_ids = [author['id'] for author in authors]
-            # Busca livros de todos os autores encontrados
             placeholders = ','.join(['?'] * len(author_ids))
+            # Modify query to include borrowed status
             cur.execute(
-                f"SELECT book.title FROM book WHERE id_author IN ({placeholders})",
+                f"SELECT title, borrowed FROM book WHERE id_author IN ({placeholders})",
                 author_ids
             )
             results = cur.fetchall()
