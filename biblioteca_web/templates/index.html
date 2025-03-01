@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Biblioteca Online{% endblock %}
-
 {% block content %}
     <main>
-        <p>Bem-vindo à nossa biblioteca online! Aqui você pode acessar diversos livros digitais.</p>
+        <div class="menu">
+                <input type="text" name="query" placeholder="Digite sua busca...">
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
     </main>
 {% endblock %}
