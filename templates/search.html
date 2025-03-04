@@ -2,9 +2,9 @@
 
 {% block content %}
     Resultados para {{query}}
-    {% if results %}
+    {% if books %}
         <ol>
-            {% for item in results %}
+            {% for item in books %}
                 <li class="mb-2">
                     {{item['title']}}
                     <button class="btn btn-sm {% if item['borrowed'] %}btn-danger{% else %}btn-success{% endif %}">
