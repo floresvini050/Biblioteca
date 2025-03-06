@@ -17,17 +17,15 @@ def search():
     query = request.form.get('query').strip().title()
 
     try:
-        conn = database_connection()
-        cur = conn.cursor()
+        with database_connection() as conn:
 
-        books = []
-        cur.execute("SELECT DISTINCT b.title, b.borrowed FROM book b LEFT JOIN author a ON a.id = b.id_author WHERE title LIKE ? OR a.name LIKE ?", (f'%{query}%', f'%{query}%'))
-        books = cur.fetchall()
-        
-        return render_template("search.html", query=query, books=books)
+            cur = conn.cursor()
+            cur.execute("SELECT DISTINCT b.title, b.borrowed FROM book b LEFT JOIN author a ON a.id = b.id_author WHERE title LIKE ? OR a.name LIKE ?", (f'%{query}%', f'%{query}%'))
+            books = cur.fetchall()
+            
+            return render_template("search.html", query=query, books=books)
 
-    except:
-        return render_template("error.html")
-    
-    finally:
-        conn.close()
+    except sqlite3.Error as e:
+        return render_template("error.html", message= 'Ocorreu um erro ao acessar o banco de dados')
+    except Exception as e:
+        return render_template("error.html", message='Ocorreu um erro inesperado')
