@@ -12,15 +12,17 @@ def database_connection():
 def index():
     return render_template('index.html')
 
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['POST']) 
 def search():
-    query = request.form.get('query').strip().title()
+    query = request.form.get('query').strip()
 
+    if not query:
+       return render_template('index.html', error='Digite um termo para pesquisar')
     try:
         with database_connection() as conn:
 
             cur = conn.cursor()
-            cur.execute("SELECT DISTINCT b.title, b.borrowed FROM book b LEFT JOIN author a ON a.id = b.id_author WHERE title LIKE ? OR a.name LIKE ?", (f'%{query}%', f'%{query}%'))
+            cur.execute("SELECT DISTINCT b.title, b.borrowed FROM book b LEFT JOIN author a ON a.id = b.id_author WHERE title LIKE ? COLLATE NOCASE OR a.name LIKE ? COLLATE NOCASE", (f'%{query}%', f'%{query}%'))
             books = cur.fetchall()
             
             return render_template("search.html", query=query, books=books)

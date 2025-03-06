@@ -2,6 +2,9 @@
 
 {% block content %}
     <main>
+        {%if error %}
+            <p>{{error}}</p>
+        {%endif%}
         <div class="menu">
             <form action = "{{url_for('search') }}" method="post">
                 <input type="text" name="query" placeholder="Digite sua busca...">
