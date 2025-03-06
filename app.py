@@ -17,34 +17,20 @@ def search():
     query = request.form.get('query').strip().title()
 
     try:
-
         conn = database_connection()
         cur = conn.cursor()
 
         books = []
-        cur.execute("SELECT title, borrowed FROM book WHERE title LIKE ?", ('%' + query + '%',))
+        cur.execute("SELECT DISTINCT b.title, b.borrowed FROM book b LEFT JOIN author a ON a.id = b.id_author WHERE title LIKE ? OR a.name LIKE ?", (f'%{query}%', f'%{query}%'))
         results = cur.fetchall()
+
         for book in results:
             books.append(book)
-
-        cur.execute("SELECT id FROM author WHERE name LIKE ?", ('%' + query + '%',))
-        authors = cur.fetchall()
-        
-        if authors:
-            author_ids = [author['id'] for author in authors]
-            placeholders = ','.join(['?'] * len(author_ids))
-
-            cur.execute(f"SELECT title, borrowed FROM book WHERE id_author IN ({placeholders})", author_ids)
-
-            results = cur.fetchall()
-
-            for book in results:
-                books.append(book)
         
         return render_template("search.html", query=query, books=books)
 
     except:
-        return("error.html")
+        return render_template("error.html")
     
     finally:
         conn.close()
