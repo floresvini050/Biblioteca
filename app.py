@@ -22,10 +22,7 @@ def search():
 
         books = []
         cur.execute("SELECT DISTINCT b.title, b.borrowed FROM book b LEFT JOIN author a ON a.id = b.id_author WHERE title LIKE ? OR a.name LIKE ?", (f'%{query}%', f'%{query}%'))
-        results = cur.fetchall()
-
-        for book in results:
-            books.append(book)
+        books = cur.fetchall()
         
         return render_template("search.html", query=query, books=books)
 
